@@ -3,27 +3,36 @@ Docker container that creates a SMB share.
 ## Running
 
 ```
-docker run -d -p 445:445 \
+docker run -d \
+  -p 137:137/udp \
+  -p 138:138/udp \
+  -p 139:139 \
+  -p 445:445 \
+  -p 445:445/udp \
+  --restart='always' \
+  --hostname 'filer' \
   -v /mnt/data:/share/data \
   -v /mnt/backups:/share/backups \
   --name <container name> zaraki673/docker-samba \
   -u "alice:abc123" \
   -u "bob:secret" \
-  -u "guest:guest" \
   -s "Backup directory:/share/backups:rw:alice,bob" \
   -s "Alice (private):/share/data/alice:rw:alice" \
   -s "Bob (private):/share/data/bob:rw:bob" \
-  -s "Documents (readonly):/share/data/documents:ro:guest,alice,bob"
+  -s "Documents (readonly):/share/data/documents:ro:alice,bob"
+  -s "Public (readonly):/share/data/public:ro:"
 ```
 
 This example will bind `smbd` to docker host ip address
 and mount two directories on docker host to container.
-Three users will be created and given various access to four shares.
-
+Additionally, the supplied hostname will be used for the NetBIOS name.
+Two users will be created and given various access to four shares.
+Ommitting users from a share results in guest access.
+The `public` share will have guest access and be browsable.
 
 ## Connecting
-
-To keep things simple, TCP port 445 is the only exposed port.
+You'll want to expose enough ports to make the server discoverable.
+The example above should be enough to get you moving.
 
 Open Finder, then press âŒ˜K. Enter `smb://<docker_host_ip>`
 and press `Connect`.

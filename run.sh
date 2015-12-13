@@ -3,6 +3,8 @@
 CONFIG_FILE="/etc/samba/smb.conf"
 
 initialized=`getent passwd |grep -c '^smbuser:'`
+
+hostname=`hostname`
 set -e
 if [ $initialized = "0" ]; then
   useradd smbuser -M
@@ -10,7 +12,9 @@ if [ $initialized = "0" ]; then
   cat >"$CONFIG_FILE" <<EOT
 [global]
 workgroup = WORKGROUP
-security = user
+netbios name = $hostname
+server string = $hostname
+security = share
 create mask = 0664
 directory mask = 0775
 force create mode = 0664
@@ -21,6 +25,12 @@ load printers = no
 printing = bsd
 printcap name = /dev/null
 disable spoolss = yes
+guest account = nobody
+max log size = 50
+map to guest = bad user
+socket options = TCP_NODELAY SO_RCVBUF=8192 SO_SNDBUF=8192
+local master = no
+dns proxy = no
 EOT
 
   while getopts ":u:s:h" opt; do
@@ -84,10 +94,17 @@ EOH
           echo -n "-only "
           echo "read only = yes" >>"$CONFIG_FILE"
         fi
-        echo -n "for users: "
-        users=$(echo "$users" |tr "," " ")
-        echo -n "$users "
-        echo "valid users = $users" >>"$CONFIG_FILE"
+        if [[ -z "$users" ]] ; then
+          echo -n "for guests: "
+          echo "browseable = yes" >>"$CONFIG_FILE"
+          echo "guest ok = yes" >>"$CONFIG_FILE"
+          echo "public = yes" >>"$CONFIG_FILE"
+        else
+          echo -n "for users: "
+          users=$(echo "$users" |tr "," " ")
+          echo -n "$users "
+          echo "valid users = $users" >>"$CONFIG_FILE"
+        fi
         echo "DONE"
         ;;
       \?)
