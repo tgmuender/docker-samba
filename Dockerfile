@@ -1,5 +1,4 @@
 FROM hypriot/rpi-python
-MAINTAINER Rob Sharp <qnm@fea.st>
 
 ENV DEBIAN_FRONTEND noninteractive
 
