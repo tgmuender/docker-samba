@@ -11,16 +11,15 @@ docker run -d \
   -p 445:445/udp \
   --restart='always' \
   --hostname 'filer' \
-  -v /mnt/data:/share/data \
-  -v /mnt/backups:/share/backups \
-  --name <container name> dastrasmue/rpi-samba \
+  -v /media/stick:/share/stick \
+  --name samba dastrasmue/rpi-samba \
   -u "alice:abc123" \
   -u "bob:secret" \
-  -s "Backup directory:/share/backups:rw:alice,bob" \
-  -s "Alice (private):/share/data/alice:rw:alice" \
-  -s "Bob (private):/share/data/bob:rw:bob" \
-  -s "Documents (readonly):/share/data/documents:ro:alice,bob"
-  -s "Public (readonly):/share/data/public:ro:"
+  -s "Backup directory:/share/stick/backups:rw:alice,bob" \
+  -s "Alice (private):/share/stick/data/alice:rw:alice" \
+  -s "Bob (private):/share/stick/data/bob:rw:bob" \
+  -s "Documents (readonly):/share/stick/data/documents:ro:alice,bob"
+  -s "Public (readonly):/share/stick/data/public:ro:"
 ```
 
 This example will bind `smbd` to docker host ip address
