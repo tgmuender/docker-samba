@@ -13,7 +13,7 @@ docker run -d \
   --hostname 'filer' \
   -v /mnt/data:/share/data \
   -v /mnt/backups:/share/backups \
-  --name <container name> zaraki673/docker-samba \
+  --name <container name> dastrasmue/rpi-samba \
   -u "alice:abc123" \
   -u "bob:secret" \
   -s "Backup directory:/share/backups:rw:alice,bob" \
