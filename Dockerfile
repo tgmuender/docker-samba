@@ -1,10 +1,9 @@
-FROM hypriot/rpi-python
+FROM hypriot/rpi-alpine-scratch
+MAINTAINER Daniel S.
 
-ENV DEBIAN_FRONTEND noninteractive
+RUN apk update && apk upgrade && apk add bash samba-common-tools samba && rm -rf /var/cache/apk/*
 
-RUN apt-get update && apt-get install -y --no-install-recommends samba-common-bin samba
-
-ADD run.sh /run.sh
+COPY run.sh /run.sh
 RUN chmod u+x /run.sh
 
 EXPOSE 445 137 138 139

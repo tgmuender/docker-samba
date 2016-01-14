@@ -7,7 +7,7 @@ initialized=`getent passwd |grep -c '^smbuser:'`
 hostname=`hostname`
 set -e
 if [ $initialized = "0" ]; then
-  useradd smbuser -M
+  adduser smbuser -HD
 
   cat >"$CONFIG_FILE" <<EOT
 [global]
@@ -73,7 +73,7 @@ EOH
         echo -n "Add user "
         IFS=: read username password <<<"$OPTARG"
         echo -n "'$username' "
-        useradd "$username" -M
+        adduser "$username" -HD
         echo -n "with password '$password' "
         echo "$password" |tee - |smbpasswd -s -a "$username"
         echo "DONE"
