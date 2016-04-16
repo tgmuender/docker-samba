@@ -7,7 +7,7 @@ initialized=`getent passwd |grep -c '^smbuser:'`
 hostname=`hostname`
 set -e
 if [ $initialized = "0" ]; then
-  adduser smbuser -HD
+  adduser smbuser -SHD
 
   cat >"$CONFIG_FILE" <<EOT
 [global]
@@ -19,8 +19,8 @@ create mask = 0664
 directory mask = 0775
 force create mode = 0664
 force directory mode = 0775
-force user = smbuser
-force group = smbuser
+#force user = smbuser
+#force group = smbuser
 load printers = no
 printing = bsd
 printcap name = /dev/null
@@ -73,7 +73,7 @@ EOH
         echo -n "Add user "
         IFS=: read username password <<<"$OPTARG"
         echo -n "'$username' "
-        adduser "$username" -HD
+        adduser "$username" -SHD
         echo -n "with password '$password' "
         echo "$password" |tee - |smbpasswd -s -a "$username"
         echo "DONE"
@@ -90,9 +90,11 @@ EOH
         if [[ "rw" = "$readwrite" ]] ; then
           echo -n "+write "
           echo "read only = no" >>"$CONFIG_FILE"
+          echo "writable = yes" >>"$CONFIG_FILE"
         else
           echo -n "-only "
           echo "read only = yes" >>"$CONFIG_FILE"
+          echo "writable = no" >>"$CONFIG_FILE"
         fi
         if [[ -z "$users" ]] ; then
           echo -n "for guests: "
@@ -104,6 +106,8 @@ EOH
           users=$(echo "$users" |tr "," " ")
           echo -n "$users "
           echo "valid users = $users" >>"$CONFIG_FILE"
+          echo "write list = $users" >>"$CONFIG_FILE"
+          echo "admin users = $users" >>"$CONFIG_FILE"
         fi
         echo "DONE"
         ;;
