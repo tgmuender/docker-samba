@@ -12,7 +12,7 @@ docker run -d \
   --restart='always' \
   --hostname 'filer' \
   -v /media/stick:/share/stick \
-  --name samba dastrasmue/rpi-samba \
+  --name samba dastrasmue/rpi-samba:v2 \
   -u "alice:abc123" \
   -u "bob:secret" \
   -s "Backup directory:/share/stick/backups:rw:alice,bob" \
