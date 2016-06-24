@@ -8,6 +8,6 @@ docker run -d \
   -p 445:445/udp \
   --hostname 'black-pearl' \
   -v /media/stick:/share/stick \
-  dastrasmue/rpi-samba \
+  dastrasmue/rpi-samba:v3 \
   -u "daniel:daniel" \
   -s "test:/share/stick:ro:"
