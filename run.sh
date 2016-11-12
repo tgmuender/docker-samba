@@ -5,9 +5,9 @@ CONFIG_FILE="/etc/samba/smb.conf"
 initialized=`getent passwd |grep -c '^smbuser:'`
 
 hostname=`hostname`
-set -e
+set -ex
 if [ $initialized = "0" ]; then
-  adduser smbuser -SHD
+  adduser smbuser --system
 
   cat >"$CONFIG_FILE" <<EOT
 [global]
@@ -73,9 +73,8 @@ EOH
         echo -n "Add user "
         IFS=: read username password <<<"$OPTARG"
         echo -n "'$username' "
-        adduser "$username" -SHD
-        echo -n "with password '$password' "
-        echo "$password" |tee - |smbpasswd -s -a "$username"
+        printf "$password\n$password\n" | adduser --gecos '' "$username"
+        printf "$password\n$password\n" | smbpasswd -a  $username
         echo "DONE"
         ;;
       s)
