@@ -1,7 +1,7 @@
-FROM hypriot/rpi-alpine-scratch
-MAINTAINER Daniel S.
+FROM blitznote/debootstrap-amd64:16.04
 
-RUN apk update && apk upgrade && apk add bash samba-common-tools samba && rm -rf /var/cache/apk/*
+RUN apt-get -y update\
+        && apt-get -y install samba
 
 COPY run.sh /run.sh
 RUN chmod u+x /run.sh
